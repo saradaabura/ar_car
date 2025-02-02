@@ -20,3 +20,15 @@ from cv2 import aruco
 ```
 pip install opencv-python
 ```
+RPi.GPIOです
+# 動作環境
+・RPi5 2GB
+・Python3（おそらくどれでも）
+# テスト用
+app.pyでwebでのカメラ動作確認ができます。
+localhost:5000にポート開放されます
+flaskが必要です
+# 詳細
+Qiita
+
+https://qiita.com/raspico/items/50ba9787cbc863f6d63b
