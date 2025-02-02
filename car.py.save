@@ -1,0 +1,69 @@
+import detect
+import time
+import gpiopin
+
+file_path = "/home/raspi5/ar_auto/test.txt"
+dis = 0
+temp = 0
+
+def final_go(data):
+    global dis
+    global temp
+    print("final stage")
+    gpiopin.moter("f", 0)
+    dis = gpiopin.spdis(30)
+    while dis is None:
+        dis = gpiopin.spdis(30)
+        gpiopin.moter("f", 0)
+    if isinstance(dis, list):
+        print(dis)
+        gpiopin.moter("f", 0)
+        while float(dis[0]) >= 20:
+            
+    if float(dis[0]) >= 35:
+                temp = ar_track()
+                log(temp)
+                if temp != None:
+                    print(temp[4])
+            #time.sleep(0.1)
+            dis = gpiopin.spdis(30)
+            while dis is None:
+                dis = gpiopin.spdis(30)
+    else:
+        dis = gpiopin.spdis(30)
+        while dis is None:
+            dis = gpiopin.spdis(30)
+    print("OK")
+rtr = 0
+def ar_track():
+    global rtr
+    info = detect.ar_info()
+    #print(info)
+    if info != None and info[0] == 0:
+        if info[1] <= 485:
+            data = "left"
+            sp = 1 - info[1] / 512
+            gpiopin.moter("l", sp)
+        if info[1] >= 539:
+            data = "right"
+            sp = (info[1] - 512) / 512
+            gpiopin.moter("r", sp)
+        if info[1] >= 485 and info[1] <= 539:
+            data = "center"
+        print(data)
+        rtr = (info[0], info[1], info[2], info[3], data)
+        return rtr
+def log(data):
+    print(data)
+    with open(file_path, "w") as file:
+        file.write(str(data))
+    print("log done")
+while True:
+    temp = ar_track()
+    if temp != None:
+        #print(temp)
+        detect_info = temp[0]
+        loc_info = temp[4]
+        if loc_info == "center":
+            final_go(detect_info)
+        log(temp)
